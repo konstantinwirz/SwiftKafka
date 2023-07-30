@@ -1,0 +1,22 @@
+name: CI
+
+on: [push]
+
+jobs:
+  build:
+
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v3
+
+      - uses: swift-actions/setup-swift@v1
+        name: Setup Swift
+        with:
+          swift-version: "5.8.1"
+
+      - name: Install librdkafka
+        run: apt install librdkafka-dev
+             
+      - name: Build
+        run: swift build
