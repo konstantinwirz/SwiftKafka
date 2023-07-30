@@ -1,0 +1,5 @@
+module RdKafka [system] {
+    umbrella header "rdkafka.h"
+    link "rdkafka"
+    export *
+}
