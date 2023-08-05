@@ -15,21 +15,56 @@ let package = Package(
             targets: ["SwiftKafka"]),
     ],
     dependencies: [
-        .package(url: "https://github.com/apple/swift-log.git", from: "1.5.2")
+        .package(url: "https://github.com/apple/swift-log.git", from: "1.5.2"),
+        .package(url: "https://github.com/facebook/zstd.git", from: "1.5.5"),
     ],
     targets: [
-        // Targets are the basic building blocks of a package, defining a module or a test suite.
-        // Targets can depend on other targets in this package and products from dependencies.
+        .target(
+            name: "RdKafka",
+            dependencies: [
+                "OpenSSL",
+                .product(name: "libzstd", package: "zstd"),
+            ],
+            exclude: [
+                "librdkafka/src/CMakeLists.txt",
+                "librdkafka/src/statistics_schema.json",
+                "librdkafka/src/Makefile",
+                "librdkafka/src/generate_proto.sh",
+                "librdkafka/src/librdkafka_cgrp_synch.png",
+                "./librdkafka/src/rdkafka_sasl_win32.c",
+            ],
+            sources: ["./librdkafka/src"],
+            publicHeadersPath: "./include",
+            cSettings: [
+                .headerSearchPath("./librdkafka/src"),
+                .headerSearchPath("./config/dummy"),
+            ],
+            linkerSettings: [
+                .linkedLibrary("curl"),
+                .linkedLibrary("z"),
+                .linkedLibrary("sasl2"),
+            ]
+        ),
         .systemLibrary(
-            name: "rdkafka",
-            pkgConfig: "rdkafka",
-            providers: [.brew(["librdkafka"]), .apt(["librdkafka-dev"])]),
+            name: "OpenSSL",
+            pkgConfig: "openssl",
+            providers: [
+                .brew(["libressl"]),
+                .apt(["libssl-dev"]),
+            ]
+        ),
         .target(
             name: "SwiftKafka",
-            dependencies: ["rdkafka", .product(name: "Logging", package: "swift-log")]
+            dependencies: [
+                "RdKafka",
+                .product(name: "Logging", package: "swift-log")
+            ]
         ),
         .testTarget(
             name: "SwiftKafkaTests",
-            dependencies: ["SwiftKafka"]),
+            dependencies: [
+                "SwiftKafka",
+                "RdKafka"
+            ]),
     ]
 )
