@@ -1,0 +1,3 @@
+[submodule "Sources/rdkafka/librdkafka"]
+	path = Sources/rdkafka/librdkafka
+	url = https://github.com/confluentinc/librdkafka
