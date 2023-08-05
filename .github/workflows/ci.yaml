@@ -16,7 +16,7 @@ jobs:
           swift-version: "5.8"
 
       - name: Fetch librdkafka
-        run: git submodules update --init
+        run: git submodule update --init
              
       - name: Build
         run: swift build
