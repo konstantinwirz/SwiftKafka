@@ -20,7 +20,7 @@ let package = Package(
     ],
     targets: [
         .target(
-            name: "RdKafka",
+            name: "RDKafka",
             dependencies: [
                 "OpenSSL",
                 .product(name: "libzstd", package: "zstd"),
@@ -56,7 +56,7 @@ let package = Package(
         .target(
             name: "SwiftKafka",
             dependencies: [
-                "RdKafka",
+                "RDKafka",
                 .product(name: "Logging", package: "swift-log")
             ]
         ),
@@ -64,7 +64,7 @@ let package = Package(
             name: "SwiftKafkaTests",
             dependencies: [
                 "SwiftKafka",
-                "RdKafka"
+                "RDKafka"
             ]),
     ]
 )
