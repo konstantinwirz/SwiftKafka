@@ -2,7 +2,7 @@
 // https://docs.swift.org/swift-book
 
 import Foundation
-import RdKafka
+import RDKafka
 import Logging
 
 
