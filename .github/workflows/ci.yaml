@@ -17,7 +17,7 @@ jobs:
 
       - name: Install dependencies
         run: |
-          sudo apt install libzstd-dev libcurl4-openssl-dev
+          sudo apt install libzstd-dev libcurl4-openssl-dev libsasl2-dev
 
       - name: Fetch librdkafka
         run: git submodule update --init
