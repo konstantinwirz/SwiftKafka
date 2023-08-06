@@ -37,7 +37,7 @@ let package = Package(
             publicHeadersPath: "./include",
             cSettings: [
                 .headerSearchPath("./librdkafka/src"),
-                .headerSearchPath("./config/dummy"),
+                .headerSearchPath("./config/platform"),
             ],
             linkerSettings: [
                 .linkedLibrary("curl"),
