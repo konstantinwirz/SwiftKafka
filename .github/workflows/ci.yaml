@@ -27,7 +27,7 @@ jobs:
 
       - name: Start single node kafka cluster
         run: |
-          docker-compose up -d --wait
+          sudo docker-compose up -d
 
       - name: Run tests
         run: swift test
