@@ -16,7 +16,8 @@ jobs:
           swift-version: "5.8"
 
       - name: Install dependencies
-        run: sudo apt install libzstd-dev
+        run: |
+          sudo apt install libzstd-dev libcurl4-openssl-dev
 
       - name: Fetch librdkafka
         run: git submodule update --init
