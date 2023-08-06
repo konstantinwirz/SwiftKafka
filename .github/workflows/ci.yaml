@@ -24,3 +24,12 @@ jobs:
              
       - name: Build
         run: swift build
+
+      - name: Start single node kafka cluster
+        run: |
+          docker-compose up -d --wait
+
+      - name: Run tests
+        run: swift test
+
+      - run: docker-compose down
