@@ -6,7 +6,7 @@
 //
 
 import XCTest
-import RdKafka
+import RDKafka
 @testable import SwiftKafka
 
 final class KafkaErrorTests: XCTestCase {
