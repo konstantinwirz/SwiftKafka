@@ -9,7 +9,7 @@ import Foundation
 import RDKafka
 
 
-class KafkaAdminClient {
+public class KafkaAdminClient {
     private let config: KafkaConfig
     internal let handle: OpaquePointer
     
@@ -35,8 +35,18 @@ class KafkaAdminClient {
         self.config.ownsHandle = false
         logger.debug("created an instance of \(NSStringFromClass(type(of: self)))")
     }
+
+     deinit {   
+        rd_kafka_destroy(self.handle)
+        logger.debug("destroyed rd_kafka handle")
+    }
+
+     /// Returns the librdkafka's version
+    public static var libRDKafkaVersion: String {
+        String(cString: rd_kafka_version_str())
+    }
     
-    func fetchMetadata() throws -> KafkaMetadata {
+    func fetchMetadata() async throws -> KafkaMetadata {
         let metadataPtr = UnsafeMutablePointer<UnsafePointer<rd_kafka_metadata>?>.allocate(capacity: 0);
         let result = rd_kafka_metadata(handle, 1, nil, metadataPtr, 10000)
         logger.trace("got result = \(result)")
@@ -52,7 +62,8 @@ class KafkaAdminClient {
         return KafkaMetadata(metadata[0])
     }
     
-    func createTopic(name: String, partionCount: Int32, replicationFactor: Int32) throws {
+    /// creates a topic, returns the number of topics created (0 or 1)
+    func createTopic(name: String, partionCount: Int32, replicationFactor: Int32) async throws -> Int {
         let errStrSize = 512
         let errStr = UnsafeMutablePointer<CChar>.allocate(capacity: errStrSize)
         
@@ -104,24 +115,11 @@ class KafkaAdminClient {
         let _ = withUnsafeMutablePointer(to: &topicCount) {
             rd_kafka_CreateTopics_result_topics(result, $0)
         }
-        
-        guard topicCount == 1 else {
-            throw KafkaError(message: "something went wrong while topic creation, topicCount=\(topicCount)")
-        }
-        
-        
-        //rd_kafka_CreateTopics_result_topics(<#T##result: OpaquePointer!##OpaquePointer!#>, <#T##cntp: UnsafeMutablePointer<Int>!##UnsafeMutablePointer<Int>!#>)
-        
-        //print("result = \(rd_kafka_event_error(event))")
-       
+
+        return topicCount       
     }
-    
-    deinit {
-        
-        rd_kafka_destroy(self.handle)
-        logger.debug("destroyed rd_kafka handle")
-    }
-    
+
+   
 }
 
 struct KafkaMetadata {
