@@ -8,18 +8,18 @@
 import Foundation
 import RDKafka
 
-struct KafkaError : Error {
+public struct KafkaError : Error {
     let message: String
     let code: Int?
     
-    init(message: String, code: Int? = nil) {
+    public init(message: String, code: Int? = nil) {
         self.message = message
         self.code = code
     }
 
 }
 
-extension KafkaError {
+internal extension KafkaError {
     init?(fromRdKafkaCode: rd_kafka_resp_err_t) {
         if fromRdKafkaCode == RD_KAFKA_RESP_ERR_NO_ERROR {
             return nil

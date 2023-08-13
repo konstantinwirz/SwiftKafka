@@ -13,7 +13,7 @@ public class KafkaAdminClient {
     private let config: KafkaConfig
     internal let handle: OpaquePointer
     
-    init(config: KafkaConfig) throws {
+    public init(config: KafkaConfig) throws {
         logger.info("about to create a \(NSStringFromClass(type(of: self))) instance")
         
         self.config = config
@@ -46,7 +46,7 @@ public class KafkaAdminClient {
         String(cString: rd_kafka_version_str())
     }
     
-    func fetchMetadata() async throws -> KafkaMetadata {
+    public func fetchMetadata() async throws -> KafkaMetadata {
         let metadataPtr = UnsafeMutablePointer<UnsafePointer<rd_kafka_metadata>?>.allocate(capacity: 0);
         let result = rd_kafka_metadata(handle, 1, nil, metadataPtr, 10000)
         logger.trace("got result = \(result)")
@@ -63,7 +63,7 @@ public class KafkaAdminClient {
     }
     
     /// creates a topic, returns the number of topics created (0 or 1)
-    func createTopic(name: String, partionCount: Int32, replicationFactor: Int32) async throws -> Int {
+    public func createTopic(name: String, partionCount: Int32, replicationFactor: Int32) async throws -> Int {
         let errStrSize = 512
         let errStr = UnsafeMutablePointer<CChar>.allocate(capacity: errStrSize)
         
@@ -122,7 +122,7 @@ public class KafkaAdminClient {
    
 }
 
-struct KafkaMetadata {
+public struct KafkaMetadata {
     let brokers: [Broker]
     let topics: [Topic]
     
@@ -131,13 +131,13 @@ struct KafkaMetadata {
     // name of originating broker
     let origBrokerName: String
     
-    struct Broker {
+    public struct Broker {
         let id: Int32
         let host: String
         let port: Int
     }
     
-    struct Topic {
+    public struct Topic {
         let name: String
         let partitions: [Partition]
         // topic error reported by broker
@@ -145,7 +145,7 @@ struct KafkaMetadata {
         
     }
     
-    struct Partition {
+    public struct Partition {
         let id: Int
         // partition error reported by broker
         let error: KafkaError?
@@ -157,7 +157,7 @@ struct KafkaMetadata {
     }
 }
 
-extension KafkaMetadata {
+public extension KafkaMetadata {
     init(_ metadata: rd_kafka_metadata) {
         
         dump(metadata.topic_cnt)
@@ -170,7 +170,7 @@ extension KafkaMetadata {
     }
 }
 
-extension KafkaMetadata.Broker {
+public extension KafkaMetadata.Broker {
     init(_ broker: rd_kafka_metadata_broker_t) {
         self.id = broker.id
         self.host = String(ptr: broker.host) ??  ""
@@ -178,7 +178,7 @@ extension KafkaMetadata.Broker {
     }
 }
 
-extension KafkaMetadata.Topic {
+public extension KafkaMetadata.Topic {
     init(_ topic: rd_kafka_metadata_topic_t) {
         self.name = String(ptr: topic.topic) ?? ""
         self.partitions = (0..<topic.partition_cnt).map { i in KafkaMetadata.Partition(topic.partitions[Int(i)]) }
@@ -186,7 +186,7 @@ extension KafkaMetadata.Topic {
     }
 }
 
-extension KafkaMetadata.Partition {
+public extension KafkaMetadata.Partition {
     init(_ partition: rd_kafka_metadata_partition_t) {
         self.id = Int(partition.id)
         self.error = KafkaError(fromRdKafkaCode: partition.err)
@@ -196,7 +196,7 @@ extension KafkaMetadata.Partition {
     }
 }
 
-extension String {
+public extension String {
     init?(ptr: UnsafeMutablePointer<CChar>) {
         self.init(validatingUTF8: ptr)
     }

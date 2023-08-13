@@ -43,7 +43,7 @@ public class KafkaConfig {
     }
 }
 
-extension [String:String] {
+public extension [String:String] {
     func asKafkaConfig() throws -> KafkaConfig {
         try KafkaConfig(self)
     }
