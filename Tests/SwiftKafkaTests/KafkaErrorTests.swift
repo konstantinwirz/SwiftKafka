@@ -12,13 +12,13 @@ import RDKafka
 final class KafkaErrorTests: XCTestCase {
     
     func testWithoutCode() {
-        let err = KafkaError(message: "some error")
+        let err = KafkaError("some error")
         XCTAssertEqual(err.message, "some error")
         XCTAssertNil(err.code)
     }
     
     func testWithCode() {
-        let err = KafkaError(message: "some error", code: 42)
+        let err = KafkaError("some error", code: 42)
         XCTAssertEqual(err.message, "some error")
         XCTAssertEqual(err.code, 42)
     }
@@ -32,5 +32,14 @@ final class KafkaErrorTests: XCTestCase {
     func testCreateFromNoErrorCode() {
         XCTAssertNil(KafkaError(fromRdKafkaCode: RD_KAFKA_RESP_ERR_NO_ERROR))
     }
-}
 
+    func testDescriptionWithoutCode() {
+        let err = KafkaError("some error")
+        XCTAssertEqual(err.description, "some error")
+    }
+
+    func testDescriptionWithCode() {
+        let err = KafkaError("some error", code: 42)
+        XCTAssertEqual(err.description, "some error; error code = 42")
+    }
+}

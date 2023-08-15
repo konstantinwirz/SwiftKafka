@@ -28,7 +28,7 @@ public class KafkaAdminClient {
             errStrSize)
         
         if tmpHandle == nil {
-            throw KafkaError(message: String(validatingUTF8: errStr)!)
+            throw KafkaError(String(validatingUTF8: errStr)!)
         }
         
         self.handle = tmpHandle!
@@ -52,7 +52,7 @@ public class KafkaAdminClient {
         logger.trace("got result = \(result)")
         
         guard let metadata = metadataPtr.pointee else {
-            throw KafkaError(message: "couldn't fetch metadata: response containes null-pointer")
+            throw KafkaError("couldn't fetch metadata: response containes null-pointer")
         }
         
         defer {
@@ -73,7 +73,7 @@ public class KafkaAdminClient {
         }
         
         guard newTopic != nil else {
-            throw KafkaError(message: String(ptr: errStr) ?? "failed to create an instance of NewTopic: reason unknown")
+            throw KafkaError(String(ptr: errStr) ?? "failed to create an instance of NewTopic: reason unknown")
         }
         
         defer {
@@ -94,7 +94,7 @@ public class KafkaAdminClient {
         logger.trace("about to poll the queue")
         let event = rd_kafka_queue_poll(queue, 5000)
         guard event != nil else {
-            throw KafkaError(message: "failed to poll the queue")
+            throw KafkaError("failed to poll the queue")
         }
         logger.debug("polled the queue")
         defer {
@@ -102,13 +102,13 @@ public class KafkaAdminClient {
         }
         
         guard rd_kafka_event_error(event) == RD_KAFKA_RESP_ERR_NO_ERROR else {
-            throw KafkaError(message: String(ptr: rd_kafka_event_error_string(event))!)
+            throw KafkaError(String(ptr: rd_kafka_event_error_string(event))!)
         }
         
         let result = rd_kafka_event_CreateTopics_result(event)
         guard result != nil else {
             let eventName = String(ptr: rd_kafka_event_name(event))!
-            throw KafkaError(message: "Expected CreateTopics_result, not \(eventName)")
+            throw KafkaError("Expected CreateTopics_result, not \(eventName)")
         }
         
         var topicCount: Int = 0

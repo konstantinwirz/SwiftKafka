@@ -26,7 +26,7 @@ public class KafkaConfig {
                     let result: rd_kafka_conf_res_t = rd_kafka_conf_set(self.handle, keyPtr, valuePtr, errStr, errStrSize)
                     logger.debug("executed rd_kafka_conf_set", metadata: ["result": "\(result.rawValue)", "key": "\(key)", "value": "\(value)"])
                     if result != RD_KAFKA_CONF_OK {
-                        throw KafkaError(message: String(validatingUTF8: errStr)!)
+                        throw KafkaError(String(validatingUTF8: errStr)!)
                     }
                 }
             }
