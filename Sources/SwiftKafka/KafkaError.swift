@@ -1,5 +1,5 @@
 //
-//  File.swift
+//  KafkaError.swift
 //  
 //
 //  Created by Konstantin Wirz on 26.07.23.
@@ -8,15 +8,22 @@
 import Foundation
 import RDKafka
 
-public struct KafkaError : Error {
-    let message: String
-    let code: Int?
+public struct KafkaError : Error, CustomStringConvertible {
+    public let message: String
+    public let code: Int?
     
-    public init(message: String, code: Int? = nil) {
+    public init(_ message: String, code: Int? = nil) {
         self.message = message
         self.code = code
     }
 
+    public var description: String {
+        if let code = code {
+            return "\(message); error code = \(code)"
+        } else {
+            return message
+        }
+    }
 }
 
 internal extension KafkaError {
