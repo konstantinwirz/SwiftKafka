@@ -48,11 +48,18 @@ public class KafkaAdminClient {
     
     public func fetchMetadata() async throws -> KafkaMetadata {
         let metadataPtr = UnsafeMutablePointer<UnsafePointer<rd_kafka_metadata>?>.allocate(capacity: 0);
+        defer {
+            metadataPtr.deallocate()
+        }
+
         let result = rd_kafka_metadata(handle, 1, nil, metadataPtr, 10000)
-        logger.trace("got result = \(result)")
+
+        guard result == RD_KAFKA_RESP_ERR_NO_ERROR else {
+            throw KafkaError(fromRdKafkaCode: result)!
+        }
         
         guard let metadata = metadataPtr.pointee else {
-            throw KafkaError("couldn't fetch metadata: response containes null-pointer")
+            throw KafkaError("couldn't fetch metadata: response contains null-pointer")
         }
         
         defer {
@@ -66,7 +73,6 @@ public class KafkaAdminClient {
     public func createTopic(name: String, partionCount: Int32, replicationFactor: Int32) async throws -> Int {
         let errStrSize = 512
         let errStr = UnsafeMutablePointer<CChar>.allocate(capacity: errStrSize)
-        
         
         let newTopic: OpaquePointer! = name.withCString { namePtr in
             return rd_kafka_NewTopic_new(namePtr, partionCount, replicationFactor, errStr, errStrSize)
