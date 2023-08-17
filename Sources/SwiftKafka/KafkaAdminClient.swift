@@ -46,7 +46,7 @@ public class KafkaAdminClient {
     }
 
     public func fetchMetadata() async throws -> KafkaMetadata {
-        let metadataPtr = UnsafeMutablePointer<UnsafePointer<rd_kafka_metadata>?>.allocate(capacity: 0);
+        let metadataPtr = UnsafeMutablePointer<UnsafePointer<rd_kafka_metadata>?>.allocate(capacity: 0)
         defer {
             metadataPtr.deallocate()
         }
