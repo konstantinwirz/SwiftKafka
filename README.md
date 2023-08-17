@@ -1,5 +1,5 @@
 # SwiftKafka
-[![CI](https://github.com/konstantinwirz/SwiftKafka/actions/workflows/ci.yaml/badge.svg)](https://github.com/konstantinwirz/SwiftKafka/actions/workflows/ci.yaml)
+[![CI](https://github.com/konstantinwirz/SwiftKafka/actions/workflows/ci.yaml/badge.svg)](https://github.com/konstantinwirz/SwiftKafka/actions/workflows/ci.yaml) [![swiftlint](https://github.com/konstantinwirz/SwiftKafka/actions/workflows/swiftlint.yaml/badge.svg)](https://github.com/konstantinwirz/SwiftKafka/actions/workflows/swiftlint.yaml)
 
 [WIP] development has just started
 
@@ -7,8 +7,7 @@ Swift kafka library based on [librdkafka](https://github.com/confluentinc/librdk
 
 ## Development
 
-- Swift v5
-- librdkafka
+- Swift v5.8
 
 ## Usage
 
@@ -16,7 +15,8 @@ Swift kafka library based on [librdkafka](https://github.com/confluentinc/librdk
 
 Create a client (assuming a kafka broker is running on localhost port 9092)
 ```swift
-let config = try ["bootstrap.servers": "localhost:9092"].asKafkaConfig()
+let config = try [.bootstrapServers: "localhost:9092"].asKafkaConfig()
+config.addValue(forKey: .socketTimeoutMs, "10000")
 let client = try KafkaAdminClient(config: config)
 ```
 
