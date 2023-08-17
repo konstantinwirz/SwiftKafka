@@ -14,9 +14,9 @@ final class KafkaAdminClientTests: XCTestCase {
         let config = try ["bootstrap.servers": "localhost:9092"].asKafkaConfig()
         let client = try KafkaAdminClient(config: config)
         let metadata = try await client.fetchMetadata()
-        
+
         dump(metadata)
-        
+
         let topicCount = try await client.createTopic(name: "barfoo-\(UUID())", partionCount: 1, replicationFactor: 1)
 
         XCTAssertEqual(topicCount, 1)
