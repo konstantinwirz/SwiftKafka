@@ -27,8 +27,10 @@ final class SwiftConfigTests : XCTestCase {
     func testAddWithUnknownKey() throws {
         XCTAssertThrowsError(try KafkaConfig().addValue("", forKey: "unknown"), "", { error in
             XCTAssert(error is KafkaError)
-            XCTAssertEqual((error as KafkaError).message, "unknown configuration property")
-            XCTAssertEqual((error as KafkaError).code, -2)
+            // swiftlint:disable force_cast
+            XCTAssertEqual((error as! KafkaError).message, "unknown configuration property")
+            XCTAssertEqual((error as! KafkaError).code, -2)
+            // swiftlint:enable force_cast
         })
     }
 
