@@ -10,7 +10,7 @@ jobs:
     steps:
       - uses: actions/checkout@v3
 
-      - uses: swift-actions/setup-swift@v1.23.0
+      - uses: swift-actions/setup-swift@v1.24.0
         name: Setup Swift
         with:
           swift-version: "5.8"
